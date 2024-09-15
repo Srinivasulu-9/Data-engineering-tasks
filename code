@@ -1,0 +1,35 @@
+pip install pdfplumber
+
+import pdfplumber
+import pandas as pd
+
+# Define the path to your PDF file and the output CSV file
+pdf_path = 'your_input.pdf' # Provide your pdf file path
+csv_output_path = 'filepath\\output_table.csv' # Provide your file location to save output file
+
+# Open the PDF file
+with pdfplumber.open(pdf_path) as pdf:
+    # Access a specific page (0-indexed)
+    page = pdf.pages[10]
+    
+    # Extract all tables from the page
+    tables = page.extract_tables()
+    
+    # Check if any tables are found
+    if tables:
+        # Choose a specific table (e.g., the first table)
+        specific_table_index = 0
+        table_data = tables[specific_table_index]
+
+        # Create a DataFrame from the table data
+        df = pd.DataFrame(table_data[1:], columns=table_data[0])  # First row is header
+
+        # Print DataFrame (optional, for verification)
+        print(df)
+
+        # Save the DataFrame to a CSV file
+        df.to_csv(csv_output_path, index=False, encoding='utf-8')
+        print(f"Table saved to {csv_output_path}")
+    else:
+        print("No tables found.")
+
